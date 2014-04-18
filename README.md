@@ -2,7 +2,7 @@ SoundDart
 =========
 SoundDart is Command-line SoundSprite generator for [Dart](https://www.dartlang.org/)
 
-It requires the wonderful [ffmpeg](http://www.ffmpeg.org/download.html) to be in your [PATH](http://en.wikipedia.org/wiki/PATH_(variable\)).
+It requires the wonderful [ffmpeg](http://www.ffmpeg.org/download.html) to be in your PATH.
 
 ##What's a SoundSprite?##
 Just like sprite sheets for graphics, a SoundSprite is comprised of several sounds, stitched together in a single compressed file. This allows for fewer HTTP Requests / deployed assets in your project. A configurable silence gap is placed between each sound (to help prevent loose Audio APIs from running into other sounds) and since Variable Bit Rate (VBR) encoding is available for most formats, there is little file size penalty.
