@@ -10,7 +10,7 @@ Just like sprite sheets for graphics, a SoundSprite is comprised of several soun
 ##How do I use SoundDart?##
 SoundDart is run on the command-line, using the [DartVM](https://www.dartlang.org/tools/dart-vm/) like so:
 
-`dart path/to/soundart.dart`
+`dart path/to/sounddart.dart`
 
 Passing no options will provide a familiar help block:
 
