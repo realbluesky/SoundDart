@@ -47,7 +47,7 @@ dart sounddart.dart -o audio *.wav # wildcard expansion supported even if your s
 dart sounddart.dart -e "mp3,ogg" *.wav # only export mp3 and ogg formats
 ```
 
-SoundDart will then chain all of your sounds together and output SoundSprites in several formats (mp3, ogg, opus, m4a) and a .json atlas (currently supports the format used by [StageXL](http://www.stagexl.org) and [Howler.js](http://goldfirestudios.com/blog/104/howler.js-Modern-Web-Audio-Javascript-Library) in your current working directory:
+SoundDart will then chain all of your sounds together and output SoundSprites in several formats (mp3, ogg, opus, m4a) and a .json atlas (currently supports the format used by [StageXL](http://www.stagexl.org) and [Howler.js](http://goldfirestudios.com/blog/104/howler.js-Modern-Web-Audio-Javascript-Library)) in your current working directory:
 
 ```
 Bomb0 added at 0.00 seconds, length 0.84 seconds
