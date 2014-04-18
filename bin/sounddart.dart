@@ -10,7 +10,8 @@ String SEP = Platform.isWindows?'\\':'/';
 main(arguments) => declare(sounddart).execute(arguments);
 
 @Command(help: 'Combines uncompressed sound files, encodes to popular formats, and generates json atlas.')
-@ArgExample('--salutation Welcome --exclaim Bob', help: 'enthusiastic')
+@ArgExample('-o audio *.wav', help: 'wildcard expansion supported even if your shell doesn\'t')
+@ArgExample('-e "mp3,ogg" *.wav', help: 'only export mp3 and ogg formats')
 sounddart(
     @Rest(name: 'files', help: "Sound files to join together.", required: true)
     List<String> files,
