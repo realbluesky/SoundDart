@@ -7,7 +7,6 @@ import 'package:path/path.dart' as path;
 
 bool _verbose;
 Directory _tmpDir;
-final String _sep = Platform.isWindows ? '\\' : '/';
 
 void main(List<String> arguments) => declare(soundDart).execute(arguments);
 
@@ -95,9 +94,8 @@ bool verbose: false}) {
       args.addAll(wavArgs);
       args.add(tmp.path);
       _log('ffmpeg ${args.join(' ')}');
-      var ffmpeg = Process.run('ffmpeg', args);
 
-      ffmpeg.then((res) {
+      return Process.run('ffmpeg', args).then((res) {
         tmpFile.writeAsBytesSync(tmp.readAsBytesSync(), mode: FileMode.APPEND);
         _log(
             'appended ${path.basename(tmp.path)} to ${path.basename(tmpFile.path)}');
@@ -113,9 +111,6 @@ bool verbose: false}) {
           offsetCursor += gapLength;
         }
       });
-
-      return ffmpeg;
-
     } else {
       print('File $filename does not exist');
     }
@@ -135,14 +130,11 @@ bool verbose: false}) {
       _log('ffmpeg $argStr');
       List args = argStr.split(' ');
 
-      var ffmpeg = Process.run('ffmpeg', args);
-      ffmpeg.then((res) {
+      return Process.run('ffmpeg', args).then((res) {
         var outSize = new File(outName).lengthSync();
         print('$outName created, compressed size ${(outSize/1024).round()} KB');
         urls.add(outName);
       });
-
-      return ffmpeg;
 
     }).whenComplete(() {
       _tmpDir.deleteSync(recursive: true);
@@ -158,10 +150,7 @@ bool verbose: false}) {
 
       print('all done - kthxbye!');
     });
-
   });
-
-
 }
 
 bool _haveFfmpeg() {
