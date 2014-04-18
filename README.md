@@ -1,6 +1,6 @@
 SoundDart
 =========
-SoundDart is Command-line SoundSprite generator for [Dart](https://www.dartlang.org/)
+SoundDart is a Command-line SoundSprite generator for [Dart](https://www.dartlang.org/)
 
 It requires the wonderful [ffmpeg](http://www.ffmpeg.org/download.html) to be in your PATH.
 
