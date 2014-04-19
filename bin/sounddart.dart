@@ -8,6 +8,8 @@ import 'package:path/path.dart' as path;
 bool _verbose;
 Directory _tmpDir;
 
+const fileTypes = const ['opus', 'mp3', 'm4a', 'ogg'];
+
 void main(List<String> arguments) => declare(soundDart).execute(arguments);
 
 @Command(help:
@@ -15,23 +17,23 @@ void main(List<String> arguments) => declare(soundDart).execute(arguments);
     )
 @ArgExample('-o audio *.wav', help:
     'wildcard expansion supported even if your shell doesn\'t')
-@ArgExample('-e "mp3,ogg" *.wav', help: 'only export mp3 and ogg formats')
+@ArgExample('-e mp3 -e ogg *.wav', help: 'only export mp3 and ogg formats')
 void soundDart(@Rest(name: 'files', help: "Sound files to join together.",
     required: true)
 List<String> files, {@Option(abbr: 'o', help:
     'Filename for the output file(s), without extension.')
-String output: 'output', @Option(abbr: 'e', help:
-    'Limit exported file types. eg "mp3,ogg"')
-String export: '', @Option(abbr: 'r', help: 'Sample rate.')
-String samplerate: '44100', @Option(abbr: 'c', help:
-    'Number of channels (1=mono, 2=stereo).')
-String channels: '1', @Option(abbr: 'g', help: 'Length of gap in seconds.')
-String gap: '.25', @Flag(abbr: 'v', help: 'Be super chatty.')
+String output: 'output', @Option(abbr: 'e', 
+    allowed: fileTypes, 
+    help: 'Export a file type.')
+List<String> export: fileTypes, @Option(abbr: 'r', help: 'Sample rate.')
+int samplerate: 44100, @Option(abbr: 'c', 
+    allowed: const {'1': 'mono', '2': 'stereo'}, 
+    help: 'Number of channels.')
+int channels: 1, @Option(abbr: 'g', help: 'Length of gap in seconds.')
+double gap: 0.25, @Flag(abbr: 'v', help: 'Be super chatty.')
 bool verbose: false}) {
 
-  var sampleRate = int.parse(samplerate);
-  var numChannels = int.parse(channels);
-  var gapLength = double.parse(gap);
+  var gapLength = gap;
 
   _verbose = verbose;
 
@@ -63,7 +65,7 @@ bool verbose: false}) {
   };
 
   //if provided, limit to specified formats
-  if (export.length > 0) formats = new Map.fromIterable(formats.keys.where((k)
+  formats = new Map.fromIterable(formats.keys.where((k)
       => export.contains(k)), value: (k) => formats[k]);
 
   //TODO allow user to customize json template
