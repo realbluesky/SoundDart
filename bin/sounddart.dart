@@ -23,15 +23,11 @@ List<String> files, {@Option(abbr: 'o', help:
 String output: 'output', @Option(abbr: 'e', help:
     'Limit exported file types. eg "mp3,ogg"')
 String export: '', @Option(abbr: 'r', help: 'Sample rate.')
-String samplerate: '44100', @Option(abbr: 'c', help:
+int samplerate: 44100, @Option(abbr: 'c', help:
     'Number of channels (1=mono, 2=stereo).')
-String channels: '1', @Option(abbr: 'g', help: 'Length of gap in seconds.')
-String gap: '.25', @Flag(abbr: 'v', help: 'Be super chatty.')
+int channels: 1, @Option(abbr: 'g', help: 'Length of gap in seconds.')
+double gap: .25, @Flag(abbr: 'v', help: 'Be super chatty.')
 bool verbose: false}) {
-
-  var sampleRate = int.parse(samplerate);
-  var numChannels = int.parse(channels);
-  var gapLength = double.parse(gap);
 
   _verbose = verbose;
 
@@ -52,11 +48,11 @@ bool verbose: false}) {
   files = expandFiles.toSet().toList(growable: false);
 
   var offsetCursor = 0;
-  var wavArgs = '-ar $sampleRate -ac $numChannels -f s16le'.split(' ');
+  var wavArgs = '-ar $samplerate -ac $channels -f s16le'.split(' ');
   var formats = {
     'opus': '-acodec libopus',
         //opus, -b:a 128k -vbr on and -compression_level 10 enabled by default
-    'mp3': '-ar $sampleRate -aq 4 -f mp3',
+    'mp3': '-ar $samplerate -aq 4 -f mp3',
         //was -ab 128k now -aq 4 (VBR good quality)
     'm4a': '', //guess defaults work - can't use VBR here, so will be larger
     'ogg': '-acodec libvorbis -qscale:a 5' //-qscale:a 5 - VBR
@@ -79,8 +75,8 @@ bool verbose: false}) {
   var tmpFile = _mktemp(output);
 
   //gap bytes
-  var silence = new List.filled((sampleRate * 2 * numChannels *
-      gapLength).round(), 0);
+  var silence = new List.filled((samplerate * 2 * channels *
+      gap).round(), 0);
   var counter = 0;
 
   Future.forEach(files, (filename) {
@@ -99,7 +95,7 @@ bool verbose: false}) {
         tmpFile.writeAsBytesSync(tmp.readAsBytesSync(), mode: FileMode.APPEND);
         _log(
             'appended ${path.basename(tmp.path)} to ${path.basename(tmpFile.path)}');
-        var dur = tmp.lengthSync() / sampleRate / numChannels / 2;
+        var dur = tmp.lengthSync() / samplerate / channels / 2;
         sprites.putIfAbsent(name, () => [offsetCursor, dur]);
         print(
             '$name added at ${offsetCursor.toStringAsFixed(2)} seconds, length ${dur.toStringAsFixed(2)} seconds'
@@ -108,7 +104,7 @@ bool verbose: false}) {
         //add gap if not last
         if (++counter < files.length) {
           tmpFile.writeAsBytesSync(silence, mode: FileMode.APPEND);
-          offsetCursor += gapLength;
+          offsetCursor += gap;
         }
       });
     } else {
@@ -118,12 +114,12 @@ bool verbose: false}) {
   }).whenComplete(() {
 
     var tmpSize = tmpFile.lengthSync();
-    var tmpDur = tmpSize / sampleRate / numChannels / 2;
+    var tmpDur = tmpSize / samplerate / channels / 2;
     print(
         'Total sprite length ${tmpDur.toStringAsFixed(2)} seconds, uncompressed size ${(tmpSize/1024).round()} KB'
         );
     var pwd = Directory.current.path;
-    var inArgs = '-y -ac $numChannels -f s16le -i ${tmpFile.path}';
+    var inArgs = '-y -ac $channels -f s16le -i ${tmpFile.path}';
     Future.forEach(formats.keys, (format) {
       var outName = '$output.$format';
       var argStr = '$inArgs ${formats[format]} $outName';

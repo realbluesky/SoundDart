@@ -2,4 +2,4 @@ name: SoundDart
 description: Command Line SoundSprite generator for Dart.  Requires ffmpeg to be installed and in PATH
 dependencies:
   path: '>=1.1.0 <2.0.0'
-  unscripted: '>=0.3.3 <0.5.0'
+  unscripted: '>=0.3.4 <0.5.0'
